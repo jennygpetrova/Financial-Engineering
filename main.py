@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-# Weekly closing prices from Excel file
+# Get weekly closing price data
 prices = pd.read_excel("portfolioP.xlsx", index_col=0)
 print("\nPortfolio Closing Prices:\n",prices)
 
