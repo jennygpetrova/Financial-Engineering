@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 p = 400
 n = 26
 
@@ -26,7 +27,6 @@ expected_returns_table = expected_returns.to_latex(index=True)
 #print(expected_returns_table)
 #print("\nExpected Returns:\n",expected_returns)
 
-
 Y = excess_returns.sub(expected_returns, axis=0)
 #print("\nY:\n", Y)
 
@@ -40,9 +40,9 @@ trace_S = np.trace(S)
 #print("\ntr(S):\n", trace_S)
 eigvals, eigvecs = np.linalg.eigh(S)
 lambdaS = eigvals[-1]
-#print("\nleading eigenvalue:\n", lambdaS)
+#print("\nLeading eigenvalue:\n", lambdaS)
 v = eigvecs[:, -1]
-#print("\ncorresponding eigenvector:\n", v)
+#print("\nCorresponding eigenvector:\n", v)
 l = (trace_S - lambdaS) / (n-1)
 #print("\nl:\n", l)
 
@@ -74,9 +74,9 @@ print("\nPortfolio Variance:\n", portfolio_var)
 portfolio_std_dev = np.sqrt(portfolio_var)
 print("\nPortfolio Standard Deviation:\n", portfolio_std_dev)
 stock_var = np.diag(sigma)
-print("\nStock Variance:\n", stock_var)
+#print("\nStock Variance:\n", stock_var)
 stock_std_dev = np.sqrt(stock_var)
-print("\nStock Standard Deviation:\n", stock_std_dev)
+#print("\nStock Standard Deviation:\n", stock_std_dev)
 
 
 # Scale by 52 for annualized results
@@ -87,7 +87,7 @@ print("\nAnnualized Variance:\n", annualized_var)
 annualized_std_dev = portfolio_std_dev * np.sqrt(52)
 print("\nAnnualized Standard Deviation:\n", annualized_std_dev)
 annualized_stock_var = stock_var * 52
-print("\nAnnualized Stock Variance:\n", annualized_stock_var)
+#print("\nAnnualized Stock Variance:\n", annualized_stock_var)
 annualized_stock_std_dev = stock_std_dev * np.sqrt(52)
-print("\nAnnualized Stock Standard Deviation:\n", annualized_stock_std_dev)
+#print("\nAnnualized Stock Standard Deviation:\n", annualized_stock_std_dev)
 
