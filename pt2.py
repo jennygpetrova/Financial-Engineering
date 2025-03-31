@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+import matplotlib.pyplot as plt
 
 p = 400
 n = 26
@@ -51,7 +51,7 @@ l = (trace_S - lambdaS) / (n-1)
 term1 = lambdaS - l
 term2 = (n / p) * l
 sigma = (term1 * np.outer(v, v)) + (term2 * np.eye(p))
-# print("\nSigma:\n", sigma)
+#print("\nSigma:\n", sigma)
 # print(sigma.shape)
 
 # Verify leading eigenvector is the same as S (note: floating point error is possible)
@@ -68,11 +68,11 @@ h_C = sigma_inv @ ones / (ones.T @ sigma_inv @ ones)
 
 # Compute portfolio expected excess return, variance, and standard deviation
 portfolio_expected_returns = h_C.T @ expected_returns
-print("\nPortfolio Expected Returns\n", portfolio_expected_returns)
+#print("\nPortfolio Expected Returns\n", portfolio_expected_returns)
 portfolio_var = h_C.T @ sigma @ h_C
-print("\nPortfolio Variance:\n", portfolio_var)
+#print("\nPortfolio Variance:\n", portfolio_var)
 portfolio_std_dev = np.sqrt(portfolio_var)
-print("\nPortfolio Standard Deviation:\n", portfolio_std_dev)
+#print("\nPortfolio Standard Deviation:\n", portfolio_std_dev)
 stock_var = np.diag(sigma)
 #print("\nStock Variance:\n", stock_var)
 stock_std_dev = np.sqrt(stock_var)
@@ -81,13 +81,53 @@ stock_std_dev = np.sqrt(stock_var)
 
 # Scale by 52 for annualized results
 annualized_return = portfolio_expected_returns * 52
-print("\nAnnualized Return:\n", annualized_return)
+#print("\nAnnualized Return:\n", annualized_return)
 annualized_var = portfolio_var * 52
-print("\nAnnualized Variance:\n", annualized_var)
+#print("\nAnnualized Variance:\n", annualized_var)
 annualized_std_dev = portfolio_std_dev * np.sqrt(52)
-print("\nAnnualized Standard Deviation:\n", annualized_std_dev)
+#print("\nAnnualized Standard Deviation:\n", annualized_std_dev)
 annualized_stock_var = stock_var * 52
 #print("\nAnnualized Stock Variance:\n", annualized_stock_var)
 annualized_stock_std_dev = stock_std_dev * np.sqrt(52)
 #print("\nAnnualized Stock Standard Deviation:\n", annualized_stock_std_dev)
+
+
+# PLOT 1
+row = prices.iloc[0]
+new_df = pd.DataFrame([row])
+print(new_df)
+for i in range(p):
+    new_df.iloc[0, i] = i+1
+print(new_df)
+
+x = stock_std_dev
+y = expected_returns
+z = new_df.iloc[0, :]
+fig, ax = plt.subplots(figsize=(9, 6))
+scatter = ax.scatter(x, y, c=z, cmap='viridis')
+point = ax.plot(portfolio_std_dev, portfolio_expected_returns, 'ro')
+ax.text(portfolio_std_dev, portfolio_expected_returns,
+        f'Portfolio Return:\n {portfolio_expected_returns:.4f}\nRisk: {portfolio_std_dev:.4f}',
+        fontsize=12, color='red', ha='left', va='bottom')
+legend = ax.legend(*scatter.legend_elements(), loc="lower right", title="Company Market Cap Range")
+ax.add_artist(legend)
+ax.set_xlabel('Risk ($\sigma$)')
+ax.set_ylabel('Expected Return ($f$)')
+ax.set_title('Expected Excess Returns vs. Risk by Market Cap', size=14)
+plt.show()
+
+# PLOT 2
+x = stock_std_dev
+y = h_C
+fig, ax = plt.subplots(figsize=(9, 6))
+scatter = ax.scatter(x, y, c=y, cmap='viridis')
+ax.text(portfolio_std_dev, portfolio_expected_returns,
+        f'Portfolio Return:\n {portfolio_expected_returns:.4f}\nRisk: {portfolio_std_dev:.4f}',
+        fontsize=14, color='red', ha='left', va='bottom')
+legend = ax.legend(*scatter.legend_elements(), loc="upper right", title="Portolio Holdings (%)")
+ax.add_artist(legend)
+ax.set_ylabel('Holdings ($h_C$)')
+ax.set_xlabel('Risk ($\sigma$)')
+ax.set_title('Portfolio Holdings by Level of Risk', size=14)
+plt.show()
 
