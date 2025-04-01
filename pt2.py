@@ -43,6 +43,8 @@ lambdaS = eigvals[-1]
 #print("\nLeading eigenvalue:\n", lambdaS)
 v = eigvecs[:, -1]
 #print("\nCorresponding eigenvector:\n", v)
+norm = v.T @ v
+print(norm)
 l = (trace_S - lambdaS) / (n-1)
 #print("\nl:\n", l)
 
