@@ -114,6 +114,7 @@ ax.add_artist(legend)
 ax.set_xlabel('Risk ($\sigma$)')
 ax.set_ylabel('Expected Return ($f$)')
 ax.set_title('Expected Excess Returns vs. Risk by Market Cap', size=14)
+plt.savefig('returns_vs_risk.png')
 plt.show()
 
 # PLOT 2
@@ -129,5 +130,6 @@ ax.add_artist(legend)
 ax.set_ylabel('Holdings ($h_C$)')
 ax.set_xlabel('Risk ($\sigma$)')
 ax.set_title('Portfolio Holdings by Level of Risk', size=14)
+plt.savefig('holdings_vs_risk.png')
 plt.show()
 
