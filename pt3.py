@@ -70,9 +70,8 @@ s = np.var(eigenvals)
 c_JSE = 1 - (v / s)
 m = np.mean(h)
 h_JSE = (m * ones) + (c_JSE * (h - (m * ones)))
+h_JSE = h_JSE / np.linalg.norm(h_JSE)
 
-term1 = lambdaS - v
-term2 = (n / p) * v
 sigma_JSE = (term1 * np.outer(h_JSE, h_JSE)) + (term2 * np.eye(p))
 
 # Holdings vector 'holdings_JSE' for minimum variance, fully invested portfolio C using JSE estimator
