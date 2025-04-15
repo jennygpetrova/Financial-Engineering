@@ -5,11 +5,11 @@ import matplotlib.colors as mcolors
 import matplotlib.cm as cm
 from matplotlib.lines import Line2D
 
-from pt2 import legend
 
 p = 400
 n = 104
 ones = np.ones(p) # to be used in several computations
+
 prices = pd.read_excel("snp500.xlsx", index_col=0) # weekly closing price data
 returns = prices.pct_change(fill_method=None).dropna() # weekly returns
 excess_returns = returns - 0.000993 # excess returns
@@ -136,8 +136,8 @@ top10_indices = sorted_indices[-10:][::-1]
 #     print(f"{idx} & {round(stock_var_JSE[idx],6)} & {round(stock_std_dev_JSE[idx],6)}")
 
 
-"---------------------------PLOTS!---------------------------"
-# PLOT 1
+"---------------------------PLOTS!!---------------------------"
+# PLOT 1 -
 row = prices.iloc[0]
 new_df = pd.DataFrame([row])
 for i in range(p):
@@ -172,26 +172,93 @@ plt.title('Holdings vs. Risk by Market Cap')
 plt.savefig('holdings_risk.png')
 plt.show()
 
+weight_PCA = holdings * expected_returns * 52
+weight_JSE = holdings_JSE * expected_returns * 52
+stock_indices = np.arange(p)
+plt.figure(figsize=(12, 6))
+colors_PCA = ['green' if x >= 0 else 'orange' for x in weight_PCA]
+plt.bar(stock_indices, weight_PCA, color=colors_PCA)
+plt.xlabel('Stock (Ordered by Market Cap)')
+plt.ylabel('Annualized Return Percentage (PCA)')
+plt.title('Histogram of Annualized Return (PCA) Per Stock')
+plt.axhline(0, color='black', linewidth=1)
+plt.tight_layout()
+plt.savefig('hist_pca.png')
+plt.show()
 
-x1 = stock_std_dev
-x2 = stock_std_dev_JSE
-y1 = expected_returns
-
-fig, ax = plt.subplots(figsize=(9, 6))
-ax.scatter(x1, y1, label='PCA')
-ax.scatter(x2, y1, label='JSE')
-ax.plot(portfolio_std_dev, portfolio_expected_returns, 'ro')
-ax.text(portfolio_std_dev, portfolio_expected_returns,
-        f'Portfolio Return:\n {portfolio_expected_returns:.4f}\nRisk: {portfolio_std_dev:.4f}',
-        fontsize=12, color='red', ha='left', va='bottom')
-ax.plot(portfolio_std_dev_JSE, portfolio_expected_returns_JSE, 'bo')
-ax.text(portfolio_std_dev, portfolio_expected_returns,
-        f'Portfolio Return:\n {portfolio_expected_returns_JSE:.4f}\nRisk: {portfolio_std_dev_JSE:.4f}',
-        fontsize=12, color='blue', ha='left', va='bottom')
-ax.set_xlabel('Risk ($\sigma$)')
-ax.set_ylabel('Expected Return ($f$)')
-ax.set_title('Expected Excess Returns vs. Risk by Market Cap', size=14)
-plt.savefig('returns_risk.png')
+plt.figure(figsize=(12, 6))
+colors_JSE = ['green' if x >= 0 else 'orange' for x in weight_JSE]
+plt.bar(stock_indices, weight_JSE, color=colors_JSE)
+plt.xlabel('Stock (Ordered by Market Cap)')
+plt.ylabel('Annualized Return Percentage (JSE)')
+plt.title('Histogram of Annualized Return (JSE) Per Stock')
+plt.axhline(0, color='black', linewidth=1)
+plt.tight_layout()
+plt.savefig('hist_jse.png')
 plt.show()
 
 
+annualized_stock_returns = expected_returns * 52
+plt.figure(figsize=(10, 7))
+plt.scatter(
+    annualized_stock_std_dev,
+    annualized_stock_returns,
+    color='magenta', alpha=0.6, edgecolors='none',
+    label='Individual Stocks (PCA)'
+)
+plt.scatter(
+    annualized_stock_std_dev_JSE,
+    annualized_stock_returns,
+    color='teal', alpha=0.6, edgecolors='none',
+    label='Individual Stocks (JSE)'
+)
+plt.scatter(
+    annualized_std_dev,
+    annualized_return,
+    color='red', marker='*', s=250, edgecolors='black',
+    label='PCA Min-Var Portfolio'
+)
+plt.scatter(
+    annualized_std_dev_JSE,
+    annualized_return_JSE,
+    color='blue', marker='*', s=250, edgecolors='black',
+    label='JSE Min-Var Portfolio'
+)
+text_PCA = (
+    f"PCA:\n"
+    f"Return = {annualized_return:.4f}\n" 
+    f"Variance = {annualized_var:.4f}"
+)
+plt.annotate(
+    text_PCA,
+    (annualized_std_dev, annualized_return),
+    textcoords="offset points",
+    xytext=(10, 40),
+    ha='left',
+    color='red',
+    fontsize=10,
+    arrowprops=dict(arrowstyle="-", color='red')
+)
+text_JSE = (
+    f"JSE:\n"
+    f"Return = {annualized_return_JSE:.4f}\n"
+    f"Variance = {annualized_var_JSE:.4f}"
+)
+plt.annotate(
+    text_JSE,
+    (annualized_std_dev_JSE, annualized_return_JSE),
+    textcoords="offset points",
+    xytext=(80, -40),
+    ha='left',
+    color='blue',
+    fontsize=10,
+    arrowprops=dict(arrowstyle="-", color='blue')
+)
+plt.title('Risk–Return Profile with Excess Returns')
+plt.xlabel('Annualized Standard Deviation (Risk)')
+plt.ylabel('Annualized Excess Return')
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.legend()
+plt.tight_layout()
+plt.savefig('scatter.png')
+plt.show()
