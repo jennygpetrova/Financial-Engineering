@@ -176,10 +176,10 @@ plt.show()
 x1 = stock_std_dev
 x2 = stock_std_dev_JSE
 y1 = expected_returns
-z1 = new_df.iloc[0, :]
+
 fig, ax = plt.subplots(figsize=(9, 6))
-ax.scatter(x1, y1, label='PCA', c=z1, cmap='Blues')
-ax.scatter(x2, y1, label='JSE', c=z1, cmap='Reds')
+ax.scatter(x1, y1, label='PCA')
+ax.scatter(x2, y1, label='JSE')
 ax.plot(portfolio_std_dev, portfolio_expected_returns, 'ro')
 ax.text(portfolio_std_dev, portfolio_expected_returns,
         f'Portfolio Return:\n {portfolio_expected_returns:.4f}\nRisk: {portfolio_std_dev:.4f}',
