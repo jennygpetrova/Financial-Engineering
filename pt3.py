@@ -15,10 +15,9 @@ returns = prices.pct_change(fill_method=None).dropna() # weekly returns
 excess_returns = returns - 0.000993 # excess returns
 excess_returns = excess_returns.T # (p x n) matrix
 expected_returns = excess_returns.mean(axis=1) # de-meaned excess returns matrix Y
-expected_returns_table = expected_returns.to_latex(index=True)
 #print(expected_returns_table)
 Y = excess_returns.sub(expected_returns, axis=0)
-S = Y @ Y.T / n # sample covariance matrix S
+S = (Y @ Y.T) / n # sample covariance matrix S
 
 trace_S = np.trace(S)
 eigenvals, eigenvecs = np.linalg.eigh(S)
@@ -43,6 +42,7 @@ for i in range(len(h)):
     sum += ((lambda_sqrt * h[i]) - m_h) ** 2
 s = sum / p
 c_JSE = 1 - (v / s)
+print(c_JSE )
 h_JSE = (m * ones) + (c_JSE * (h - (m * ones)))
 h_JSE = h_JSE / np.linalg.norm(h_JSE)
 sigma_JSE = (term1 * np.outer(h_JSE, h_JSE)) + (term2 * np.eye(p)) # single factor model covariance matrix sigma_JSE
@@ -75,7 +75,7 @@ annualized_return = portfolio_expected_returns * 52
 annualized_var = portfolio_var * 52
 #print("annualized variance", annualized_var)
 annualized_std_dev = portfolio_std_dev * np.sqrt(52)
-#print("annualized standard deviation", annualized_std_dev)
+print("annualized standard deviation", annualized_std_dev)
 annualized_stock_var = stock_var * 52
 annualized_stock_std_dev = stock_std_dev * np.sqrt(52)
 
@@ -106,7 +106,7 @@ annualized_return_JSE = portfolio_expected_returns_JSE * 52
 annualized_var_JSE = portfolio_var_JSE * 52
 #print("annualized variance (JSE)", annualized_var_JSE)
 annualized_std_dev_JSE = portfolio_std_dev_JSE * np.sqrt(52)
-#print("annualized standard deviation (JSE)", annualized_std_dev_JSE)
+print("annualized standard deviation (JSE)", annualized_std_dev_JSE)
 annualized_stock_var_JSE = stock_var_JSE * 52
 annualized_stock_std_dev_JSE = stock_std_dev_JSE * np.sqrt(52)
 
@@ -227,7 +227,7 @@ plt.scatter(
 text_PCA = (
     f"PCA:\n"
     f"Return = {annualized_return:.4f}\n" 
-    f"Variance = {annualized_var:.4f}"
+    f"Variance = {annualized_std_dev:.4f}"
 )
 plt.annotate(
     text_PCA,
@@ -242,7 +242,7 @@ plt.annotate(
 text_JSE = (
     f"JSE:\n"
     f"Return = {annualized_return_JSE:.4f}\n"
-    f"Variance = {annualized_var_JSE:.4f}"
+    f"Variance = {annualized_std_dev_JSE:.4f}"
 )
 plt.annotate(
     text_JSE,
